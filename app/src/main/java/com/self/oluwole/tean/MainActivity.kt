@@ -1,29 +1,18 @@
 package com.self.oluwole.tean
 
-import android.content.pm.PackageManager
-import android.support.design.widget.TabLayout
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.Manifest.permission.INTERNET
-
+import android.content.pm.PackageManager
+import android.os.Bundle
+import android.support.design.widget.TabLayout
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.view.ViewPager
-import android.os.Bundle
-import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.support.v7.app.AppCompatActivity
+import android.view.*
 import android.widget.Toast
-import com.cloudinary.Cloudinary
-import com.google.firebase.database.*
-
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_main.view.*
 
@@ -59,36 +48,22 @@ class MainActivity : AppCompatActivity() {
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
 
-//        fab.setOnClickListener { _ ->
-//
-//            var set_data: ArrayList<JavaModel> = ArrayList<JavaModel>()
-//            var single_data = JavaModel("TEAN 2017", 24)
-//            set_data.add(single_data)
-//            var database: FirebaseDatabase = FirebaseDatabase.getInstance()
-//            var myRef: DatabaseReference = database.getReference("mags")
-//
-//            val key = myRef.push().key
-//            myRef.child(key).setValue(single_data)
-//        }
-
     }
 
     fun reqPermission(){
-        ActivityCompat.requestPermissions(this@MainActivity, arrayOf(INTERNET, WRITE_EXTERNAL_STORAGE), RequestpermissionCode)
+        ActivityCompat.requestPermissions(this@MainActivity, arrayOf(INTERNET), RequestpermissionCode)
     }
 
     fun checkPermission(): Boolean{
-        var result: Int = ContextCompat.checkSelfPermission(applicationContext, WRITE_EXTERNAL_STORAGE)
         var result1: Int = ContextCompat.checkSelfPermission(applicationContext, INTERNET)
-        return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED
+        return result1 == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when (requestCode) {
             RequestpermissionCode -> if (grantResults.size > 0) {
-                val StoragePermission: Boolean = grantResults[0] == PackageManager.PERMISSION_GRANTED
                 val InternetPermission: Boolean = grantResults[1] == PackageManager.PERMISSION_GRANTED
-                if (StoragePermission && InternetPermission) {
+                if (InternetPermission) {
                     Toast.makeText(this, "Permission Granted", Toast.LENGTH_LONG).show()
                 } else {
                     Toast.makeText(this, "Permission Denied", Toast.LENGTH_LONG).show()
@@ -109,8 +84,8 @@ class MainActivity : AppCompatActivity() {
         // as you specify a parent activity in AndroidManifest.xml.
         val id = item.itemId
 
-        if (id == R.id.action_settings) {
-            return true
+        if (id == R.id.action_about) {
+            Toast.makeText(applicationContext, "Work in Progress", Toast.LENGTH_LONG).show()
         }
 
         return super.onOptionsItemSelected(item)
@@ -132,7 +107,7 @@ class MainActivity : AppCompatActivity() {
                 //return PlaceholderFragment.newInstance(45)
             }
             else{
-                return PlaceholderFragment.newInstance(position + 1)
+                return PlaceholderFragment.newInstance()
             }
 //            return PlaceholderFragment()
         }
@@ -152,7 +127,7 @@ class MainActivity : AppCompatActivity() {
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                                   savedInstanceState: Bundle?): View? {
             val rootView = inflater.inflate(R.layout.fragment_main, container, false)
-            rootView.section_label.text = getString(R.string.section_format, arguments.getInt(ARG_SECTION_NUMBER))
+            rootView.section_label.text = arguments.getString(ARG_SECTION_NUMBER)
             return rootView
         }
 
@@ -167,10 +142,10 @@ class MainActivity : AppCompatActivity() {
              * Returns a new instance of this fragment for the given section
              * number.
              */
-            fun newInstance(sectionNumber: Int): PlaceholderFragment {
+            fun newInstance(): PlaceholderFragment {
                 val fragment = PlaceholderFragment()
                 val args = Bundle()
-                args.putInt(ARG_SECTION_NUMBER, sectionNumber)
+                args.putString(ARG_SECTION_NUMBER, "Hello from Women of Essence")
                 fragment.arguments = args
                 return fragment
             }
