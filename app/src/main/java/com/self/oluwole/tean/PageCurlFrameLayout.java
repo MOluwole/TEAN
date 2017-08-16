@@ -14,7 +14,6 @@ import android.graphics.PointF;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 public class PageCurlFrameLayout extends RelativeLayout implements PageCurl {

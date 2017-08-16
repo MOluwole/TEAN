@@ -2,19 +2,20 @@ package com.self.oluwole.tean
 
 import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
+import android.support.design.widget.Snackbar
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
+import android.support.v4.view.ViewPager.PageTransformer
+import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import com.squareup.picasso.Picasso
-import android.support.v4.view.ViewPager.PageTransformer
-import android.util.Log
 import android.widget.RelativeLayout
+import android.widget.Toast
+import com.squareup.picasso.Picasso
 
 
 class Read : AppCompatActivity() {
@@ -46,7 +47,11 @@ class Read : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_read)
+        var intent: Intent = intent
+        name = intent.extras.getString("name")
+        page = intent.extras.getInt("page")
 
         arrayList = ArrayList()
         (1..page).mapTo(arrayList) { "http://res.cloudinary.com/dj4hinyoa/image/upload/pg_$it/v1502564722/$name.jpg" }
@@ -56,9 +61,7 @@ class Read : AppCompatActivity() {
         mViewPager.adapter = mCustomPagerAdapter
         mViewPager.setPageTransformer(false, PageCurlPageTransformer())
 
-        var intent: Intent = intent
-        name = intent.extras.getString("name")
-        page = intent.extras.getInt("page")
+
 
     }
 
@@ -82,10 +85,28 @@ class Read : AppCompatActivity() {
 
         override fun instantiateItem(container: ViewGroup?, position: Int): Any {
             var itemView = mLayoutInflater?.inflate(R.layout.pager_item, container, false) as View
-            var imageView: TouchImageView? = itemView?.findViewById(R.id.imageView)
+            var imageView: TouchImageView? = itemView.findViewById(R.id.imageView)
+            var fab: FloatingActionButton? = itemView.findViewById(R.id.fab)
 
-            Picasso.with(context).load(arrayList[position]).into(imageView)
-            container?.addView(itemView)
+            fab?.setOnClickListener { view ->
+                Snackbar.make(view, "Adding of comments coming soon", Snackbar.LENGTH_LONG).show()
+            }
+
+            Picasso.with(context)
+                    .load(arrayList[position])
+                    .into(imageView, object : com.squareup.picasso.Callback {
+                        override fun onSuccess() {
+                            //do smth when picture is loaded successfully
+                            imageView?.setZoom(1.toFloat())
+                        }
+
+                        override fun onError() {
+                            Toast.makeText(context, "An error occured. Try again", Toast.LENGTH_SHORT).show()
+                        }
+                    })
+            container?.addView(itemView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+
+            Toast.makeText(context, position.toString() + "/" + arrayList.size, Toast.LENGTH_SHORT).show()
 
             return itemView
         }

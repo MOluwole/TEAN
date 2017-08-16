@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity() {
             fun newInstance(): PlaceholderFragment {
                 val fragment = PlaceholderFragment()
                 val args = Bundle()
-                args.putString(ARG_SECTION_NUMBER, "Hello from Women of Essence")
+                args.putString(ARG_SECTION_NUMBER, "Hello from Women of Essence. Comments Section Coming up")
                 fragment.arguments = args
                 return fragment
             }
